@@ -17,6 +17,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #ffffff;
@@ -43,6 +47,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .navbar {
@@ -65,6 +70,7 @@
             font-size: 16px;
             font-weight: 500;
             position: relative;
+            cursor: pointer;
         }
 
         .nav-links a.active::after {
@@ -87,6 +93,87 @@
             font-size: 18px;
             cursor: pointer;
             color: #5e3e25;
+        }
+
+        /* Notification Popup */
+        .notification-popup {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            width: 350px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            display: none;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .notification-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #5e3e25;
+        }
+
+        .notification-header span {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .notification-close {
+            cursor: pointer;
+            font-size: 20px;
+            color: #999;
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            display: flex;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .notification-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-text {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .notification-link {
+            color: #5e3e25;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
         }
 
         /* Hero Section */
@@ -200,7 +287,6 @@
             background-size: 100% 100%;
             background-repeat: no-repeat;
             margin-top: 0px;
-            /* Kurangi untuk menurunkan wave */
             position: relative;
         }
 
@@ -280,9 +366,7 @@
             background-repeat: no-repeat;
             transform: rotate(180deg);
             bottom: 50px;
-            /* Tambahkan untuk menaikkan wave */
             position: relative;
-            /* Pastikan wave bisa dipindah dengan bottom */
         }
 
         /* Products Section */
@@ -444,10 +528,15 @@
 
         .map-container {
             flex: 1;
-            background-color: #f4f4f4;
             border-radius: 10px;
             overflow: hidden;
-            height: 300px;
+            height: 350px;
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
 
         .contact-info {
@@ -472,16 +561,13 @@
         .footer-wave {
             width: 100%;
             height: 70px;
-            /* Kurangi tinggi wave */
             background-image: url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Background%20navbar-nfXNsc5pfHEewFaicgDaYY6vc1zpRi.png');
             background-size: 100% 100%;
             background-repeat: no-repeat;
             position: absolute;
             top: -40px;
-            /* Sesuaikan agar wave tidak terlalu tinggi */
             left: 0;
         }
-
 
         .footer-container {
             text-align: center;
@@ -534,10 +620,36 @@
             margin-top: 25px;
         }
 
+        /* Badge for notification count */
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .bell-icon {
+            position: relative;
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .products-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+
+            .notification-popup {
+                width: 300px;
+                right: 10px;
             }
         }
 
@@ -589,6 +701,12 @@
             .contact-container {
                 flex-direction: column;
             }
+
+            .notification-popup {
+                width: 90%;
+                right: 5%;
+                left: 5%;
+            }
         }
 
         @media (max-width: 576px) {
@@ -612,24 +730,77 @@
                         src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo-UPegvOgo8yj5yiZW66XFLxccXivP68.png"
                         alt="Amanda Bakery Logo" class="logo"></a>
                 <div class="nav-links">
-                    <a href="#" class="active">Home</a>
-                    <a href="#">About</a>
-                    <a href="#">Product</a>
-                    <a href="#">Location</a>
-                    <a href="#">Contact us</a>
+                    <a href="#home" class="active">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#products">Product</a>
+                    <a href="#location">Location</a>
+                    <a href="#contact">Contact us</a>
+                    <a href="{{ route('pages.invoices') }}">Invoices</a> <!-- Updated to use the invoices route -->
                 </div>
                 <div class="nav-icons">
-                    <i class="fas fa-globe"></i>
-                    <i class="fas fa-shopping-cart"></i>
-                    <i class="fas fa-bell"></i>
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-truck"></i> <!-- Changed from globe to delivery truck -->
+                    <a href="{{ route('payment') }}">
+                        <i class="fas fa-shopping-cart"></i> 
+                    </a>
+                    <div class="bell-icon">
+                        <i class="fas fa-bell" id="notificationBell"></i>
+                        <span class="notification-badge">5</span>
+                    </div>
+                    <a href="{{ route('profile') }}">
+                        <i class="fas fa-user"></i> 
+                    </a>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Notification Popup -->
+    <div class="notification-popup" id="notificationPopup">
+        <div class="notification-header">
+            <h3>Notification <span>(5)</span></h3>
+            <div class="notification-close" id="closeNotification">&times;</div>
+        </div>
+        <div class="notification-list">
+            <div class="notification-item">
+                <div class="notification-avatar"></div>
+                <div class="notification-content">
+                    <p class="notification-text">Your delivery will be arriving soon! check out for the details and estimated time <a href="#" class="notification-link">here</a></p>
+                </div>
+                <div class="notification-time">12:00 AM</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-avatar"></div>
+                <div class="notification-content">
+                    <p class="notification-text">A recent sign-in activity to your account <a href="#" class="notification-link">check if its not you</a></p>
+                </div>
+                <div class="notification-time">12:00 AM</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-avatar"></div>
+                <div class="notification-content">
+                    <p class="notification-text">Your delivery will be arriving soon! check out for the details and estimated time <a href="#" class="notification-link">here</a></p>
+                </div>
+                <div class="notification-time">12:00 AM</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-avatar"></div>
+                <div class="notification-content">
+                    <p class="notification-text">Your delivery will be arriving soon! check out for the details and estimated time <a href="#" class="notification-link">here</a></p>
+                </div>
+                <div class="notification-time">12:00 AM</div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-avatar"></div>
+                <div class="notification-content">
+                    <p class="notification-text">Your delivery will be arriving soon! check out for the details and estimated time <a href="#" class="notification-link">here</a></p>
+                </div>
+                <div class="notification-time">12:00 AM</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero" id="home">
         <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
             <div class="hero-content">
                 <h1 class="hero-title">Baked with<br>Love & Heart</h1>
@@ -666,8 +837,8 @@
     <!-- Wave Top -->
     <div class="wave-top"></div>
 
-    <!-- Brown Section -->
-    <section class="brown-section">
+    <!-- Brown Section (About) -->
+    <section class="brown-section" id="about">
         <div class="container">
             <div class="brown-content">
                 <div class="brown-image">
@@ -692,7 +863,7 @@
     <div class="wave-bottom"></div>
 
     <!-- Products Section -->
-    <section class="products-section">
+    <section class="products-section" id="products">
         <div class="container">
             <div class="section-header">
                 <div class="section-badge">Our products</div>
@@ -726,13 +897,13 @@
     </section>
 
     <!-- Contact Section -->
-    <section class="contact-section">
+    <section class="contact-section" id="location">
         <div class="container">
             <div class="contact-container">
                 <div class="map-container">
-                    <!-- Map placeholder -->
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.408676308593!2d109.23679967476191!3d-7.419942092590498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e655f000c13a2f9%3A0x84562247cc5984b1!2sArmanda%20Bakery!5e0!3m2!1sid!2sid!4v1742963496174!5m2!1sid!2sid" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
-                <div class="contact-info">
+                <div class="contact-info" id="contact">
                     <div class="section-badge">Our Location</div>
                     <h2 class="section-title">Unique & Oriented taste</h2>
                     <p class="contact-address">
@@ -742,7 +913,7 @@
                     </p>
                     <div class="btn-group">
                         <a href="#" class="btn btn-primary">Contact us</a>
-                        <a href="#" class="btn btn-outline"
+                        <a href="https://www.google.com/maps/place/Armanda+Bakery/@-7.4199421,109.2367997,17z/data=!3m1!4b1!4m6!3m5!1s0x2e655f000c13a2f9:0x84562247cc5984b1!8m2!3d-7.4199421!4d109.2393746!16s%2Fg%2F11x230_2m1!5m1!1e2?entry=ttu&g_ep=EgoyMDI1MDMyMy4wIKXMDSoASAFQAw%3D%3D" target="_blank" class="btn btn-outline"
                             style="color: #5e3e25; border-color: #5e3e25;">Visit us on maps</a>
                     </div>
                 </div>
@@ -761,12 +932,12 @@
                     <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
                 </div>
                 <div class="footer-links">
-                    <a href="#">Home</a>
-                    <a href="#">About</a>
-                    <a href="#">Product</a>
-                    <a href="#">Location</a>
-                    <a href="#">Contact</a>
-                    <a href="#">Return policy</a>
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#products">Product</a>
+                    <a href="#location">Location</a>
+                    <a href="#contact">Contact</a>
+                    <a href="invoice.html">Invoices</a>
                 </div>
                 <p class="copyright">Copyright © 2024 Amanda Bakery. All right reserved</p>
             </div>
@@ -929,6 +1100,49 @@
             i.style.fontSize = '24px';
             i.style.color = '#5e3e25';
             icon.appendChild(i);
+        });
+
+        // Notification popup functionality
+        const notificationBell = document.getElementById('notificationBell');
+        const notificationPopup = document.getElementById('notificationPopup');
+        const closeNotification = document.getElementById('closeNotification');
+
+        notificationBell.addEventListener('click', function() {
+            if (notificationPopup.style.display === 'block') {
+                notificationPopup.style.display = 'none';
+            } else {
+                notificationPopup.style.display = 'block';
+            }
+        });
+
+        closeNotification.addEventListener('click', function() {
+            notificationPopup.style.display = 'none';
+        });
+
+        // Close popup when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!notificationBell.contains(event.target) && 
+                !notificationPopup.contains(event.target)) {
+                notificationPopup.style.display = 'none';
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Adjust for header height
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
     </script>
 </body>

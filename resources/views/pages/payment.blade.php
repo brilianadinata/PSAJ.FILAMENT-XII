@@ -556,7 +556,6 @@
                 </div>
             </div>
             <div class="nav-icons">
-                <i class="fas fa-truck"></i>
                 <i class="fas fa-shopping-cart"></i>
                 <i class="fas fa-bell"></i>
                 <i class="fas fa-user"></i>
@@ -706,38 +705,34 @@
 <script>
     // Delivery Options Selection
     const deliveryOptions = document.querySelectorAll('.delivery-option');
-    
-    deliveryOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            // Remove selected class from all options
-            deliveryOptions.forEach(opt => {
-                opt.classList.remove('selected');
-                opt.querySelector('.radio-custom').classList.remove('selected');
+    if (deliveryOptions) {
+        deliveryOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                deliveryOptions.forEach(opt => {
+                    opt.classList.remove('selected');
+                    opt.querySelector('.radio-custom').classList.remove('selected');
+                });
+                option.classList.add('selected');
+                option.querySelector('.radio-custom').classList.add('selected');
             });
-            
-            // Add selected class to clicked option
-            option.classList.add('selected');
-            option.querySelector('.radio-custom').classList.add('selected');
         });
-    });
-    
+    }
+
     // Payment Method Selection
     const paymentMethods = document.querySelectorAll('.payment-method');
-    
-    paymentMethods.forEach(method => {
-        method.addEventListener('click', () => {
-            // Remove selected class from all methods
-            paymentMethods.forEach(m => {
-                m.classList.remove('selected');
-                m.querySelector('.radio-custom').classList.remove('selected');
+    if (paymentMethods) {
+        paymentMethods.forEach(method => {
+            method.addEventListener('click', () => {
+                paymentMethods.forEach(m => {
+                    m.classList.remove('selected');
+                    m.querySelector('.radio-custom').classList.remove('selected');
+                });
+                method.classList.add('selected');
+                method.querySelector('.radio-custom').classList.add('selected');
             });
-            
-            // Add selected class to clicked method
-            method.classList.add('selected');
-            method.querySelector('.radio-custom').classList.add('selected');
         });
-    });
-    
+    }
+
     // Quantity Controls
     const decreaseBtn = document.querySelector('.decrease-btn');
     const increaseBtn = document.querySelector('.increase-btn');
@@ -745,59 +740,73 @@
     const totalPriceEl = document.querySelector('.summary-total span:last-child');
     const subtotalEl = document.querySelector('.summary-row:first-child span:last-child');
     const itemTotalEl = document.querySelector('.cart-header .cart-count');
-    
+
     let quantity = 2;
     let price = 10.00;
     let total = quantity * price;
-    
+
     function updatePrice() {
-        subtotalEl.textContent = `$${total.toFixed(2)}`;
-        totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        if (subtotalEl && totalPriceEl) {
+            subtotalEl.textContent = `$${total.toFixed(2)}`;
+            totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        }
     }
-    
-    decreaseBtn.addEventListener('click', () => {
-        if (quantity > 1) {
-            quantity--;
+
+    if (decreaseBtn && increaseBtn && quantityEl) {
+        decreaseBtn.addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                quantityEl.textContent = quantity;
+                total = quantity * price;
+                updatePrice();
+            }
+        });
+
+        increaseBtn.addEventListener('click', () => {
+            quantity++;
             quantityEl.textContent = quantity;
             total = quantity * price;
             updatePrice();
-        }
-    });
-    
-    increaseBtn.addEventListener('click', () => {
-        quantity++;
-        quantityEl.textContent = quantity;
-        total = quantity * price;
-        updatePrice();
-    });
-    
+        });
+    }
+
     // Remove Item
     const removeItemBtn = document.querySelector('.remove-item');
     const cartItem = document.querySelector('.cart-item');
-    
-    removeItemBtn.addEventListener('click', () => {
-        cartItem.style.display = 'none';
-        itemTotalEl.textContent = '0 items';
-        subtotalEl.textContent = '$0.00';
-        totalPriceEl.textContent = '$0.00';
-    });
-    
+
+    if (removeItemBtn && cartItem) {
+        removeItemBtn.addEventListener('click', () => {
+            cartItem.style.display = 'none';
+            if (itemTotalEl && subtotalEl && totalPriceEl) {
+                itemTotalEl.textContent = '0 items';
+                subtotalEl.textContent = '$0.00';
+                totalPriceEl.textContent = '$0.00';
+            }
+        });
+    }
+
     // Remove All
     const removeAllBtn = document.querySelector('.remove-all');
-    
-    removeAllBtn.addEventListener('click', () => {
-        cartItem.style.display = 'none';
-        itemTotalEl.textContent = '0 items';
-        subtotalEl.textContent = '$0.00';
-        totalPriceEl.textContent = '$0.00';
-    });
-    
+
+    if (removeAllBtn && cartItem) {
+        removeAllBtn.addEventListener('click', () => {
+            cartItem.style.display = 'none';
+            if (itemTotalEl && subtotalEl && totalPriceEl) {
+                itemTotalEl.textContent = '0 items';
+                subtotalEl.textContent = '$0.00';
+                totalPriceEl.textContent = '$0.00';
+            }
+        });
+    }
+
     // Checkout Button
     const checkoutBtn = document.querySelector('.checkout-btn');
-    
-    checkoutBtn.addEventListener('click', () => {
-        alert('Proceeding to checkout!');
-    });
+
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+            alert('Proceeding to checkout!');
+        });
+    }
 </script>
 </body>
 </html>
